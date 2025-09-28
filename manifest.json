@@ -1,0 +1,22 @@
+{
+    "name": "Manga Saver", 
+    "version": "0.0.1.0",
+    "description": "Saves your manga",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "manifest_version": 3,
+    "icons": {
+        "128": "Zerotwomain.png"
+    },
+	"background": {
+        "service_worker": "build/extension/worker.js"
+    },
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "tabs",
+        "webNavigation"
+     ],
+     "host_permissions": ["http://localhost:3000/*"]
+}
