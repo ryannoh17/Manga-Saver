@@ -5,27 +5,38 @@ import { User, userType, userMangaType } from '../schemas/user.js';
 
 const router = express.Router();
 
-// create
+/**
+ * creates a new user into the database
+ * don't allow duplicate usernames
+ * don't allow usernames and passwords less than 4 characters
+ * sends a message JSON on success or failure
+ */
+
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
 
-    if (password.length < 4) {
+    if (username.length < 4)
         return res
             .send({
-                error: `password too short`,
+                message: `username should be at least 4 characters`,
             })
             .status(410);
-    }
+
+    if (password.length < 4)
+        return res
+            .send({
+                message: `password should be at least 4 characters`,
+            })
+            .status(410);
 
     try {
-        const existingUser = await User.findOne({ title: username });
-        if (existingUser) {
+        const existingUser = await User.findOne({ username: username });
+        if (existingUser)
             return res
                 .send({
-                    error: `user ${username} already exists in database`,
+                    message: `username ${username} already exists`,
                 })
                 .status(401);
-        }
 
         const hashedPassword = await bcrypt.hash(password, 7);
         const newUser = await User.create({
@@ -33,57 +44,106 @@ router.post('/', async (req, res) => {
             password: hashedPassword,
         });
 
-        res.send({
-            message: `new user ${newUser.username} created`,
-        }).status(201);
+        return res
+            .send({
+                message: `new user ${newUser.username} created`,
+            })
+            .status(201);
     } catch (error: any) {
-        res.send({
-            error: 'Failed to create user',
-            details: error.message,
-        }).status(503);
+        return res
+            .send({
+                error: 'Failed to create user',
+                details: error.message,
+            })
+            .status(503);
     }
 });
 
+/**
+ * logs in with given user credentials
+ * checks for username to exist
+ * sends a JSON message on success or failure
+ */
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username: username });
 
-    if (!user) {
-        return res.send(`user ${username} does not exist`);
-    }
+    if (user === null)
+        return res
+            .send({
+                message: `username ${username} does not exist`,
+            })
+            .status(401);
 
     try {
         if (await bcrypt.compare(password, user.password!)) {
-            res.send({ message: 'logged in' }).status(210)
+            return res.send({ message: 'logged in' }).status(210);
         } else {
-            res.send({ message: 'log in failed' }).status(411)
+            return res.send({ message: 'incorrect password' }).status(411);
         }
     } catch {
-        res.send({ error: 'log in error' }).status(501)
+        return res.send({ error: 'log in error' }).status(501);
     }
 });
 
-// read
-router.get('/', async (req, res) => {
-    let mangas = User.find({}).limit(100);
+// reads user with username
+router.get('/:username', async (req, res) => {
+    const username = req.params.username;
+    const user = await User.find({ username: username });
 
-    res.send(mangas).status(200);
+    return res.send(user).status(200);
 });
 
-router.get('/:title', async (req, res) => {
-    let foundManga = User.find({ _id: req.params.title });
+// // might need this later
+// router.get('/:title', async (req, res) => {
+//     let foundManga = User.find({ _id: req.params.title });
 
-    if (!foundManga) {
-        res.send('manga with that title not found').status(405);
-    } else {
-        res.send(foundManga).status(200);
-    }
-});
+//     if (!foundManga) {
+//         res.send('manga with that title not found').status(405);
+//     } else {
+//         res.send(foundManga).status(200);
+//     }
+// });
 
 // // update
 // router.patch();
 
 // // delete
 // router.delete();
+
+/**
+ * creates a new user manga and adds to user manga list
+ * checks for duplicate mangas
+ * updates chapters if needed (is this bad?)
+ */
+router.post('/:userID/manga', async (req, res) => {
+    const { userID } = req.params;
+    const { title, chapter } = req.body;
+
+    const user = await User.findOneAndUpdate(
+        {
+            username: userID,
+            'mangaList.title': title,
+        },
+        {
+            mangaId: {},
+            currentChapter: chapter,
+            highestChapter: Number,
+            notes: String,
+        },
+        { upsert: true }
+    );
+
+    user?.mangaList;
+});
+
+/**
+ * updates manga information
+ * UP TO USER TO ENSURE MANGA IS ALREADY IN DATABASE
+ * 
+ */
+router.patch('/:username/manga/:title', async (req, res) => {
+    
+});
 
 export default router;

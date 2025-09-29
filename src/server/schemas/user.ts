@@ -12,7 +12,7 @@ const userMangaSchema = new Schema({
 const userSchema = new Schema({
     username: String,
     password: String,
-    myMangas: [userMangaSchema]
+    mangaList: [userMangaSchema]
 });
 
 export type userMangaType = InferSchemaType<typeof userMangaSchema>;

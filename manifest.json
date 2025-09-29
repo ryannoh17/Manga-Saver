@@ -3,7 +3,7 @@
     "version": "0.0.1.0",
     "description": "Saves your manga",
     "action": {
-        "default_popup": "index.html"
+        "default_popup": "login.html"
     },
     "manifest_version": 3,
     "icons": {
@@ -16,7 +16,8 @@
         "activeTab",
         "scripting",
         "tabs",
-        "webNavigation"
+        "webNavigation",
+        "storage"
      ],
      "host_permissions": ["http://localhost:3000/*"]
 }

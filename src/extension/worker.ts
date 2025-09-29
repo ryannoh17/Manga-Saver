@@ -19,7 +19,7 @@ function getURLInfo(URL: string) {
         count++;
     }
 
-    if (count == 3) {
+    if (count === 3) {
         mangaChapter = parseInt(remainingURL.substring(1));
 
         mangaName = URL.substring(7);
@@ -30,7 +30,10 @@ function getURLInfo(URL: string) {
     return [mangaName, mangaChapter];
 }
 
-chrome.webNavigation.onCompleted.addListener((details) => {
+chrome.webNavigation.onCompleted.addListener(async (details) => {
+    const { loggedIn } = await chrome.storage.local.get(['loggedIn']);
+    if (!loggedIn) return;
+    
     const { url } = details;
     let mangaTitle = '';
 

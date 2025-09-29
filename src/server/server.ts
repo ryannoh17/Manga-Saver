@@ -15,7 +15,7 @@ app.use('/manga', manga);
 app.use('/user', user)
 
 app.use((_err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  res.status(500).send("Uh oh! An unexpected error occured.")
+  res.send("An unexpected error occured.").status(500)
 })
 
 app.listen(PORT, () => {
