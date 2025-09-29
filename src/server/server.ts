@@ -5,7 +5,7 @@ import connectDB from './db/conn.js';
 import manga from './routes/manga.js';
 import user from './routes/user.js';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 const PORT = process.env.PORT || 3000;
 
 const app = express();
