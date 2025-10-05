@@ -6,7 +6,6 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
 
     if (url.includes('mangakatana.com/manga/')) {
         const slashIndex = url.indexOf('/', 30);
-        console.log(slashIndex);
         let mangaTitle = '';
         let mangaChapter = -1;
 

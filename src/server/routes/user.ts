@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 // import { ObjectId } from 'mongoose';
 import { User, userType, userMangaType } from '../schemas/user.js';
+import { Manga } from '../schemas/manga.js';
 
 const router = express.Router();
 
@@ -116,34 +117,118 @@ router.get('/:username', async (req, res) => {
  * checks for duplicate mangas
  * updates chapters if needed (is this bad?)
  */
-router.post('/:userID/manga', async (req, res) => {
-    const { userID } = req.params;
+router.post('/:username/manga', async (req, res) => {
+    const { username } = req.params;
     const { title, chapter } = req.body;
 
-    const user = await User.findOneAndUpdate(
-        {
-            username: userID,
-            'mangaList.title': title,
-        },
-        {
-            mangaId: {},
-            currentChapter: chapter,
-            highestChapter: Number,
-            notes: String,
-        },
-        { upsert: true }
-    );
+    const fetchedManga = await Manga.findOne({ title: title });
 
-    user?.mangaList;
+    if (!fetchedManga) {
+        return res.send({
+            message: `manga ${title} does not exist`
+        });
+    }
+
+    const mangaID = fetchedManga?._id;
+
+    try {
+        await User.updateOne(
+            { username: username },
+            {
+                $addToSet: {
+                    mangaId: mangaID,
+                    currentChapter: chapter,
+                    $max: { highestChapter: chapter },
+                    dateAdded: Date.now,
+                    dateRead: Date.now,
+                },
+            }
+        ).then(async (addResult) => {
+            if (addResult.modifiedCount === 0) {
+                await User.updateOne(
+                    {
+                        username: username,
+                        'mangaList.mangaId': mangaID,
+                    },
+                    {
+                        $set: {
+                            'mangaList.$.currentChapter': chapter,
+                            'mangaList.$.dateRead': new Date(),
+                        },
+                        $max: {
+                            'mangaList.$.highestChapter': chapter
+                        }
+                    }
+                );
+
+                return res.send({
+                    message: 'user manga already exists, updated existing manga',
+                }).status(201);
+            }
+        });
+
+        return res.send({ message: 
+            'new user manga added' 
+        }).status(201);
+    } catch {
+        return res.send({ message: 
+            'unexpected error adding user manga' 
+        }).status(501);
+    }
 });
+
+// rouiter.get();
 
 /**
  * updates manga information
  * UP TO USER TO ENSURE MANGA IS ALREADY IN DATABASE
- * 
+ *
  */
 router.patch('/:username/manga/:title', async (req, res) => {
-    
+    const { username, title } = req.params;
+    const { chapter } = req.body;
+
+    const fetchedManga = await Manga.findOne({ title: title });
+
+    if (!fetchedManga) {
+        return res.send({
+            message: `manga ${title} does not exist`
+        });
+    }
+
+    const mangaID = fetchedManga?.id;
+
+    try {
+        const user = await User.findOneAndUpdate(
+            {
+                username: username,
+                'mangaList.mangaId': mangaID,
+            },
+            {
+                $set: {
+                    'mangaList.$.currentChapter': chapter,
+                    'mangaList.$.dateRead': new Date(),
+                },
+                $max: {
+                    'mangaList.$.highestChapter': chapter
+                }
+            },
+        );
+
+        return res.send({ message: 
+            `manga ${title} has been sucessfully been updated` 
+        }).status(201);
+    } catch {
+        return res.send({
+            message: 'there was an error updating user manga'
+        }).status(501);
+    }
 });
 
 export default router;
+
+// once user goes to manga page save it locally
+// use that to either create or update
+// create will prevent duplicates
+
+// maybe update code so login returns userid and username is not used
