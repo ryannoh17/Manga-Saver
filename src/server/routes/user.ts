@@ -121,6 +121,8 @@ router.post('/:username/manga', async (req, res) => {
     const { username } = req.params;
     const { title, chapter } = req.body;
 
+    console.log(title, chapter, username)
+
     const fetchedManga = await Manga.findOne({ title: title });
 
     if (!fetchedManga) {
@@ -136,15 +138,17 @@ router.post('/:username/manga', async (req, res) => {
             { username: username },
             {
                 $addToSet: {
-                    mangaId: mangaID,
-                    currentChapter: chapter,
-                    $max: { highestChapter: chapter },
-                    dateAdded: Date.now,
-                    dateRead: Date.now,
-                },
+                    mangaList: {
+                        mangaId: mangaID,
+                        currentChapter: chapter,
+                        $max: { highestChapter: chapter }
+                    }
+                }
             }
         ).then(async (addResult) => {
             if (addResult.modifiedCount === 0) {
+                console.log(addResult);
+                console.log('trying to add new user manga');
                 await User.updateOne(
                     {
                         username: username,
@@ -153,7 +157,7 @@ router.post('/:username/manga', async (req, res) => {
                     {
                         $set: {
                             'mangaList.$.currentChapter': chapter,
-                            'mangaList.$.dateRead': new Date(),
+                            'mangaList.$.dateRead': new Date,
                         },
                         $max: {
                             'mangaList.$.highestChapter': chapter
@@ -167,12 +171,14 @@ router.post('/:username/manga', async (req, res) => {
             }
         });
 
-        return res.send({ message: 
-            'new user manga added' 
+        return res.send({
+            message:
+                `new user manga ${title} added to ${username}`
         }).status(201);
     } catch {
-        return res.send({ message: 
-            'unexpected error adding user manga' 
+        return res.send({
+            message:
+                'unexpected error adding user manga'
         }).status(501);
     }
 });
@@ -207,7 +213,7 @@ router.patch('/:username/manga/:title', async (req, res) => {
             {
                 $set: {
                     'mangaList.$.currentChapter': chapter,
-                    'mangaList.$.dateRead': new Date(),
+                    'mangaList.$.dateRead': new Date,
                 },
                 $max: {
                     'mangaList.$.highestChapter': chapter
@@ -215,8 +221,9 @@ router.patch('/:username/manga/:title', async (req, res) => {
             },
         );
 
-        return res.send({ message: 
-            `manga ${title} has been sucessfully been updated` 
+        return res.send({
+            message:
+                `manga ${title} has been sucessfully been updated`
         }).status(201);
     } catch {
         return res.send({

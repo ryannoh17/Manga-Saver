@@ -4,8 +4,8 @@ const userMangaSchema = new Schema({
     mangaId: { type: Schema.Types.ObjectId, ref: 'Manga', required: true },
     currentChapter: Number,
     highestChapter: Number,
-    dateAdded: { type: Date, default: Date.now },
-    dateRead: { type: Date, default: Date.now },
+    dateAdded: { type: Date, default: Date.now() },
+    dateRead: { type: Date, default: Date.now() },
     notes: String,
 });
 

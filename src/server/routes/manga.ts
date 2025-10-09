@@ -33,7 +33,6 @@ router.post('/', async (req, res) => {
 // reads 100 manga from db
 router.get('/', async (req, res) => {
     let mangas = await Manga.find({}).limit(100);
-    console.log('got manga')
 
     res.send(mangas).status(202);
 });
