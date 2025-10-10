@@ -139,9 +139,9 @@ router.post('/:username/manga', async (req, res) => {
             {
                 $addToSet: {
                     mangaList: {
-                        mangaId: mangaID,
+                        mangaDetail: mangaID,
                         currentChapter: chapter,
-                        $max: { highestChapter: chapter }
+                        highestChapter: chapter
                     }
                 }
             }
@@ -152,7 +152,7 @@ router.post('/:username/manga', async (req, res) => {
                 await User.updateOne(
                     {
                         username: username,
-                        'mangaList.mangaId': mangaID,
+                        'mangaList.mangaDetail': mangaID,
                     },
                     {
                         $set: {
@@ -183,7 +183,13 @@ router.post('/:username/manga', async (req, res) => {
     }
 });
 
-// rouiter.get();
+router.get('/:username/manga', async (req, res) => {
+    const { username } = req.params;
+
+    let user = await User.findOne({ username: username }).populate('mangaList.mangaDetail');
+    
+    return res.send(user?.mangaList).status(200);
+});
 
 /**
  * updates manga information
@@ -205,10 +211,10 @@ router.patch('/:username/manga/:title', async (req, res) => {
     const mangaID = fetchedManga?.id;
 
     try {
-        const user = await User.findOneAndUpdate(
+        await User.findOneAndUpdate(
             {
                 username: username,
-                'mangaList.mangaId': mangaID,
+                'mangaList.mangaDetail': mangaID,
             },
             {
                 $set: {
@@ -217,7 +223,10 @@ router.patch('/:username/manga/:title', async (req, res) => {
                 },
                 $max: {
                     'mangaList.$.highestChapter': chapter
-                }
+                },                
+                mangaList: {
+                    $sort: { dateRead: -1 }
+                },
             },
         );
 

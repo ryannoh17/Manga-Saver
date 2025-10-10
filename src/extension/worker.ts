@@ -1,6 +1,6 @@
 chrome.webNavigation.onCompleted.addListener(async (details) => {
-    const { loggedIn, username } = await chrome.storage.local.get(['loggedIn', 'username']);
-    if (!loggedIn) return;
+    const { username } = await chrome.storage.local.get(['username']);
+    if (!username) return;
 
     const { url } = details;
 

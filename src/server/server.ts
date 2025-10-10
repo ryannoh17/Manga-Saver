@@ -25,5 +25,4 @@ app.listen(PORT, () => {
 async function startServer() {
     await connectDB();
 }
-
 startServer();

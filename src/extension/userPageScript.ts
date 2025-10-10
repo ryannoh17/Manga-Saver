@@ -1,18 +1,31 @@
-// document.getElementById('lastManga')?.innerHTML = async () => {
-//     try {
-//         const fetchedMangas = await fetch('http://localhost:3000/manga');
-//         console.log(await fetchedMangas.json());
-//     } catch (error) {
-//         console.error('Error: ', error);
-//     }
-// }
+async function displayLastReadManga() {
+    const lastReadMangaElement = document.getElementById('lastManga');
+    if (!lastReadMangaElement) return;
+
+    const { username } = await chrome.storage.local.get(['username']);
+
+    try {
+        const userMangaList = await fetch(`http://localhost:3000/user/${username}/manga`);
+        const mangaData = await userMangaList.json();
+        const lastManga = mangaData[0];
+        console.log(mangaData[0]);
+
+        lastReadMangaElement
+            .innerHTML = `Last Manga: ${lastManga.mangaDetail.title || 'No manga found'}`;
+    } catch (error) {
+        console.error('Error: ', error);
+        lastReadMangaElement.innerHTML = '<p>Failed to load manga data</p>';
+    }
+}
+
+displayLastReadManga();
 
 document.getElementById('logout')?.addEventListener('click', async () => {
     chrome.action.setPopup({
         popup: 'login.html',
     });
 
-    await chrome.storage.local.set({ loggedIn: false });
+    await chrome.storage.local.set({ username: null });
 
     window.close();
 });

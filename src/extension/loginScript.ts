@@ -27,7 +27,7 @@ document.getElementById('userForm')?.addEventListener('submit', async (event) =>
                 popup: 'userPage.html'
             });
             
-            await chrome.storage.local.set({ loggedIn: true, username: username });
+            await chrome.storage.local.set({ username: username });
 
             window.close();
         }
