@@ -3,14 +3,14 @@
     "version": "0.0.1.0",
     "description": "Saves your manga",
     "action": {
-        "default_popup": "login.html"
+        "default_popup": "index.html"
     },
     "manifest_version": 3,
     "icons": {
         "128": "Zerotwomain.png"
     },
 	"background": {
-        "service_worker": "build/extension/worker.js"
+        "service_worker": "worker.js"
     },
     "permissions": [
         "activeTab",

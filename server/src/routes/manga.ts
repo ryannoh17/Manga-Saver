@@ -1,6 +1,6 @@
 import express from 'express';
 // import { ObjectId } from 'mongoose';
-import { Manga, mangaType } from '../schemas/manga.js';
+import { Manga } from '../schemas/manga.js';
 
 const router = express.Router();
 
@@ -22,6 +22,7 @@ router.post('/', async (req, res) => {
         return res.send({
             message: `new manga ${newManga.title} added`
         }).status(201);
+        
     } catch (error: any) {
         return res.send({
             error: 'Failed to create manga',

@@ -1,10 +1,10 @@
 document.getElementById('userForm')?.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const username = (<HTMLInputElement>document.getElementById('username')).value;
-    const password = (<HTMLInputElement>document.getElementById('password')).value;
+    const username = "" //(document.getElementById('username')).value;
+    const password = "" //(document.getElementById('password')).value;
 
-    const isNewUser = (<HTMLInputElement>event.submitter).value === 'Create';
+    const isNewUser = false //(event.submitter).value === 'Create';
 
     try {
         const endPoint = isNewUser ? '' : '/login';

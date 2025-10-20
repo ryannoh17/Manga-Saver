@@ -14,7 +14,7 @@ async function displayLastReadManga() {
             .innerHTML = `Last Manga: ${lastManga.mangaDetail.title || 'No manga found'}`;
     } catch (error) {
         console.error('Error: ', error);
-        lastReadMangaElement.innerHTML = '<p>Failed to load manga data</p>';
+        lastReadMangaElement.innerHTML = 'Failed to load manga data';
     }
 }
 
