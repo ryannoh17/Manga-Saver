@@ -1,12 +1,11 @@
-// import { useState } from 'react'
-import './App.css'
+import LoginForm from './pages/loginForm';
 
-function App() {
-  // const [count, setCount] = useState(0)
-
-  return (
-    <h1 >Manga Saver</h1>
-  );
+export default function App() {
+    return (
+        <div className="App">
+            <LoginForm />
+        </div>
+    );
 }
 
-export default App
+// user router here ig idk fuck me
