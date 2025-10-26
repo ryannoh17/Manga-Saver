@@ -1,14 +1,18 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
+import LoginForm from './pages/loginForm';
+import UserPage from './pages/userPopup2';
 
-const router = createBrowserRouter([
-  { path: '/index.html', element: <App /> }
+let signedIn = chrome.storage.local.get(['username']) !== null;
+
+const router = createHashRouter([
+    { path: '/', element: signedIn ? <UserPage /> : <LoginForm /> },
+    { path: '/user', element: <UserPage /> }
 ]);
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
+    <StrictMode>
+        <RouterProvider router={router} />
+    </StrictMode>,
 )

@@ -12,6 +12,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
 
         // checks only if on a manga
         if (slashIndex !== -1) {
+            const baseURL = "https://manga-saver-latest.onrender.com"
             let dotLoc = url.indexOf('.', 30);
             mangaTitle = url.substring(30, dotLoc).replace(/-/g, ' ');
             mangaChapter = parseInt(url.substring(slashIndex + 2));
@@ -21,7 +22,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
             // only if user has read manga before
             if (localMangas.includes(mangaTitle)) {
                 try {
-                    await fetch(`http://localhost:3000/user/${username}/manga/${mangaTitle}`, {
+                    await fetch(`${baseURL}/${username}/manga/${mangaTitle}`, {
                         method: 'PATCH',
                         headers: {
                             'content-type': 'application/json',
@@ -38,7 +39,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                 chrome.storage.local.set({ localMangas: localMangas });
 
                 try {
-                    await fetch('http://localhost:3000/manga', {
+                    await fetch(`${baseURL}/manga`, {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json',
@@ -56,7 +57,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                 }
 
                 try {
-                    await fetch(`http://localhost:3000/user/${username}/manga`, {
+                    await fetch(`${baseURL}/user/${username}/manga`, {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json',

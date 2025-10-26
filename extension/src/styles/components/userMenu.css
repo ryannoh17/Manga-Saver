@@ -1,0 +1,81 @@
+/* Wrapper */
+.user-menu {
+  position: relative;
+}
+
+/* Trigger button */
+.user-menu-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.user-menu-button:hover {
+  background: #e5e7eb;
+}
+
+/* user icon inside button */
+.user-menu-button .user-icon {
+  width: 16px;
+  height: 16px;
+  color: #374151;
+}
+
+/* Dropdown menu */
+.user-menu-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  width: 192px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  border: 1px solid #e5e7eb;
+  padding: 4px 0;
+  z-index: 10;
+}
+
+/* Menu items */
+.menu-item {
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  font-size: 14px;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.menu-item:hover {
+  background-color: #fef2f2;
+}
+
+/* separator */
+.menu-separator {
+  border-top: 1px solid #f3f4f6;
+  margin: 4px 0;
+}
+
+/* danger / sign out */
+.menu-item.danger {
+  color: #dc2626;
+}
+.menu-item.danger:hover {
+  background-color: #fef2f2;
+}
+
+/* small icon inside menu items */
+.menu-item .menu-icon {
+  width: 16px;
+  height: 16px;
+}
