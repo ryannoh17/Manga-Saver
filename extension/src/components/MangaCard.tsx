@@ -72,38 +72,17 @@ export function MangaCard({ manga, onDelete, userMenu }: MangaCardProps) {
             </div>
           </div>
           <div>
-            <p
+            <p className='manga-description'
               style={{
-                fontSize: '13px',
-                color: '#6b7280',
-                lineHeight: '1.5',
-                margin: 0,
                 display: isDescriptionExpanded ? 'block' : '-webkit-box',
                 WebkitLineClamp: isDescriptionExpanded ? 'unset' : 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
               }}
             >
               {manga.description}
             </p>
-            <button
+            <button 
+              className='manga-description-more-button'
               onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-              style={{
-                fontSize: '13px',
-                color: '#a855f7',
-                fontWeight: '500',
-                background: 'none',
-                border: 'none',
-                padding: '4px 0 0 0',
-                cursor: 'pointer',
-                textDecoration: 'none',
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.textDecoration = 'underline')
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.textDecoration = 'none')
-              }
             >
               {isDescriptionExpanded ? 'Show less' : 'More'}
             </button>

@@ -15,7 +15,7 @@
 
 .manga-image {
 	width: 80px;
-	height: 160px;
+	height: 140px;
 	object-fit: cover;
 	border-radius: 8px;
 }
@@ -76,10 +76,27 @@
 	font-size: 14px;
 }
 
-.manga-description-row {
-	display: flex;
-	gap: 8px;
-	align-items: flex-start;
+.manga-description {
+	font-size: 13px;
+	color: #6b7280;
+	line-height: 1.5;
+	margin: 0;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.manga-description-more-button {
+	font-size: 13px;
+	color: #6b7280;
+	font-weight: 500;
+	background: none;
+	border: none;
+	padding: 4px 0 0 0;
+	cursor: pointer;
+}
+
+.manga-description-more-button:hover {
+	text-decoration: underline;
 }
 
 /* Actions */
@@ -109,7 +126,7 @@
 }
 
 .manga-link:hover {
-	background-color: #e9ebef;
+	background-color: #e5e7eb;
 }
 
 .manga-delete {

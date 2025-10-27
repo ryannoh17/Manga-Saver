@@ -57,12 +57,12 @@
   transition: background-color 0.2s;
 }
 .menu-item:hover {
-  background-color: #fef2f2;
+  background-color: #e5e7eb;
 }
 
 /* separator */
 .menu-separator {
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid #e5e7eb;
   margin: 4px 0;
 }
 
@@ -71,7 +71,7 @@
   color: #dc2626;
 }
 .menu-item.danger:hover {
-  background-color: #fef2f2;
+  background-color: #f3c7c7;
 }
 
 /* small icon inside menu items */
