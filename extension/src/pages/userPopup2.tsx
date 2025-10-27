@@ -36,13 +36,7 @@ export default function App() {
   }
 
   return (
-    <div
-      style={{
-        width: '400px',
-        // minHeight: '100px',
-        background: 'linear-gradient(to bottom right, #faf5ff, #eff6ff)',
-      }}
-    >
+    <>
       {lastManga ? (
         <MangaCard
           manga={lastManga}
@@ -55,33 +49,10 @@ export default function App() {
           }
         />
       ) : (
-        <div
-          style={{
-            background: 'white',
-            borderRadius: '12px',
-            padding: '48px 16px',
-            textAlign: 'center',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-          }}
-        >
-          <div
-            style={{
-              width: '64px',
-              height: '64px',
-              background: '#e5e7eb',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 16px',
-            }}
-          >
+        <div className='no-manga-container'>
+          <div className='no-manga-icon-container'>
             <svg
-              style={{
-                width: '32px',
-                height: '32px',
-                color: '#9ca3af',
-              }}
+              className='no-manga-icon'
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -94,25 +65,14 @@ export default function App() {
               />
             </svg>
           </div>
-          <p
-            style={{
-              color: '#4b5563',
-              fontWeight: '500',
-              marginBottom: '4px',
-            }}
-          >
+          <p className='no-manga-text'>
             No manga read yet
           </p>
-          <p
-            style={{
-              color: '#9ca3af',
-              fontSize: '14px',
-            }}
-          >
+          <p className='no-manga-subtext'>
             Start reading to track your progress
           </p>
         </div>
       )}
-    </div>
+    </>
   )
 }
