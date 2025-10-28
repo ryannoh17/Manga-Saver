@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { UserMenu } from '../components/UserMenu';
 import { MangaCard } from '../components/MangaCard';
-import '../styles/userPopup2.css';
+import '../styles/userPopup.css';
 
 interface MangaEntry {
   id: string

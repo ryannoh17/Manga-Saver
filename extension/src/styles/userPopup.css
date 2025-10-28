@@ -1,186 +1,40 @@
-/* Popup-specific styles for MangaHistory component */
-
-.manga-popup-container {
-    width: 360px;
-    padding: 1.25rem;
-    background: var(--color-background);
+body {
+  width: 424px;
+  margin: 0;
+  background-color: white;
 }
 
-.manga-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-    color: var(--color-muted-foreground);
+.no-manga-container {
+  background: white;
+  padding: 48px 16px;
+  text-align: center;
 }
 
-.manga-empty-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    margin-bottom: 0.75rem;
-    opacity: 0.4;
+.no-manga-icon-container {
+  width: 64px;
+  height: 64px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
 }
 
-.manga-empty-text {
-    margin: 0;
+.no-manga-icon {
+  width: 32px;
+  height: 32px;
+  color: #9ca3af;
 }
 
-.manga-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+.no-manga-text {
+  color: #4b5563;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 
-.manga-card {
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.manga-card-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 0.75rem;
-}
-
-.manga-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.manga-title {
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.manga-metadata {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.875rem;
-    color: var(--color-muted-foreground);
-}
-
-.manga-metadata-item {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-}
-
-.manga-metadata-icon {
-    width: 0.875rem;
-    height: 0.875rem;
-}
-
-.manga-menu-container {
-    position: relative;
-}
-
-.manga-menu-trigger {
-    padding: 0.25rem;
-    border-radius: 0.375rem;
-    transition: background-color 150ms;
-}
-
-.manga-menu-trigger:hover {
-    background: var(--color-accent);
-}
-
-.manga-menu-icon {
-    width: 1rem;
-    height: 1rem;
-    color: var(--color-muted-foreground);
-}
-
-.manga-menu-dropdown {
-    position: absolute;
-    right: 0;
-    margin-top: 0.25rem;
-    width: 12rem;
-    background: var(--color-popover);
-    border: 1px solid var(--color-border);
-    border-radius: 0.375rem;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    z-index: 50;
-}
-
-.manga-menu-item {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    text-align: left;
-    font-size: 0.875rem;
-    color: var(--color-destructive);
-    border-radius: 0.375rem;
-    transition: background-color 150ms;
-    display: flex;
-    align-items: center;
-}
-
-.manga-menu-item:hover {
-    background: var(--color-accent);
-}
-
-.manga-menu-item-icon {
-    width: 1rem;
-    height: 1rem;
-    margin-right: 0.5rem;
-}
-
-.manga-continue-button {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    border: 1px solid var(--color-border);
-    border-radius: 0.375rem;
-    transition: background-color 150ms;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.manga-continue-button:hover {
-    background: var(--color-accent);
-}
-
-.manga-continue-icon {
-    width: 0.875rem;
-    height: 0.875rem;
-}
-
-.manga-view-all-button {
-    width: 100%;
-    padding: 0.625rem 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: 0.375rem;
-    transition-property: background-color, color;
-    transition-duration: 150ms;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--color-muted-foreground);
-}
-
-.manga-view-all-button:hover {
-    background: var(--color-accent);
-    color: var(--color-foreground);
-}
-
-.manga-view-all-icon {
-    width: 0.875rem;
-    height: 0.875rem;
+.no-manga-subtext {
+  color: #9ca3af;
+  font-size: 14px;
 }
