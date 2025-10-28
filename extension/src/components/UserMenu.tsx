@@ -9,6 +9,7 @@ interface UserMenuProps {
 
 export function UserMenu({ onSignOut, onViewHistory }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
+  //let signedIn = chrome.storage.local.get(['username']) !== null;
 
   const menuRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -33,7 +34,7 @@ export function UserMenu({ onSignOut, onViewHistory }: UserMenuProps) {
       >
         <UserIcon className='user-icon' />
       </button>
-      
+
       {isOpen && (
         <div className='user-menu-dropdown'>
           <button

@@ -1,23 +1,24 @@
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import '../styles/loginForm.css';
 
-export default function App() {
+type Props = {
+    setSignedIn: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function LoginForm({ setSignedIn }: Props) {
 	const [signingIn, setSigningIn] = useState(true);
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const navigate = useNavigate();
 
 	const baseURL = "https://manga-saver-latest.onrender.com";
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log('Login attempt:', { email: username, password });
-
+		
 		try {
 			const endPoint = signingIn ? '/login' : '';
 
@@ -36,7 +37,7 @@ export default function App() {
 
 			if (response.ok) {
 				await chrome.storage.local.set({ username: username });
-				navigate('user', { replace: true });
+				setSignedIn(true);
 			}
 
 			alert(loginResult.message);
