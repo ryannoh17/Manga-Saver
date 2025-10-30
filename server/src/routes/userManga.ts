@@ -18,19 +18,19 @@ router.post('/', async (req: express.Request<UserMangaParams>, res) => {
     const { username } = req.params;
     const { title, chapter } = req.body;
 
-    console.log(title, chapter, username)
-
-    const fetchedManga = await Manga.findOne({ title: title });
-
-    if (!fetchedManga) {
-        return res.send({
-            message: `manga ${title} does not exist`
-        });
-    }
-
-    const mangaID = fetchedManga?._id;
+    console.log(title, chapter, username);
 
     try {
+        const fetchedManga = await Manga.findOne({ title: title });
+
+        if (!fetchedManga) {
+            return res.status(404).send({
+                message: `manga ${title} does not exist`
+            });
+        }
+
+        const mangaID = fetchedManga?._id;
+
         await User.updateOne(
             { username: username },
             {
@@ -62,19 +62,21 @@ router.post('/', async (req: express.Request<UserMangaParams>, res) => {
                     }
                 );
 
-                return res.send({
+                return res.status(201).send({
                     message: 'user manga already exists, updated existing manga',
-                }).status(201);
+                });
             }
         });
 
-        return res.send({
+        return res.status(201).send({
             message: `new user manga ${title} added to ${username}`
-        }).status(201);
-    } catch {
-        return res.send({
-            message: 'unexpected error adding user manga'
-        }).status(501);
+        });
+    } catch (err: any) {
+        console.log('error adding new manga to user: ', err)
+        return res.status(500).send({
+            message: 'unexpected error adding user manga',
+            details: err
+        });
     }
 });
 
@@ -84,15 +86,24 @@ router.post('/', async (req: express.Request<UserMangaParams>, res) => {
 router.get('/', async (req: express.Request<UserMangaParams>, res) => {
     const { username } = req.params;
 
-    let user = await User
-        .findOne({ username: username })
-        .populate('mangaList.mangaDetail');
+    try {
+        let user = await User
+            .findOne({ username: username })
+            .populate('mangaList.mangaDetail');
 
-    if (!user) return res.send({
-        message: 'user does not exist'
-    }).status(401);
+        if (!user) return res.status(400).send({
+            message: 'user does not exist'
+        });
 
-    return res.send(user.mangaList).status(201);
+        return res.status(201).send(user.mangaList);
+    } catch (err: any) {
+        console.log('error getting user manga: ', err);
+        return res.status(500).send({
+            message: 'unexpected error getting user manga',
+            details: err
+        });
+    }
+
 });
 
 /**
@@ -103,15 +114,15 @@ router.patch('/:title', async (req: express.Request<UserMangaParams>, res) => {
     const { username, title } = req.params;
     const { chapter } = req.body;
 
-    const fetchedManga = await Manga.findOne({ title: title });
-    if (!fetchedManga) {
-        return res.send({
-            message: `manga ${title} does not exist`
-        });
-    }
-    const mangaID = fetchedManga.id;
-
     try {
+        const fetchedManga = await Manga.findOne({ title: title });
+        if (!fetchedManga) {
+            return res.status(404).send({
+                message: `manga ${title} does not exist`
+            });
+        }
+        const mangaID = fetchedManga.id;
+
         await User.updateOne(
             {
                 username: username,
@@ -131,13 +142,15 @@ router.patch('/:title', async (req: express.Request<UserMangaParams>, res) => {
             },
         );
 
-        return res.send({
+        return res.status(201).send({
             message: `manga ${title} has been sucessfully been updated`
-        }).status(201);
-    } catch {
-        return res.send({
-            message: 'there was an error updating user manga'
-        }).status(501);
+        });
+    } catch (err: any) {
+        console.log('user manga update error: ', err);
+        return res.status(500).send({
+            message: 'there was an error updating user manga',
+            details: err
+        });
     }
 });
 
@@ -148,15 +161,15 @@ router.patch('/:title', async (req: express.Request<UserMangaParams>, res) => {
 router.delete(`/:title`, async (req: express.Request<UserMangaParams>, res) => {
     const { username, title } = req.params;
 
-    const fetchedManga = await Manga.findOne({ title: title });
-    if (!fetchedManga) {
-        return res.send({
-            message: `manga ${title} does not exist`
-        });
-    }
-    const mangaID = fetchedManga.id;
-
     try {
+        const fetchedManga = await Manga.findOne({ title: title });
+        if (!fetchedManga) {
+            return res.status(404).send({
+                message: `manga ${title} does not exist`
+            });
+        }
+        const mangaID = fetchedManga.id;
+
         await User.updateOne(
             { username: username },
             {
@@ -169,13 +182,16 @@ router.delete(`/:title`, async (req: express.Request<UserMangaParams>, res) => {
         );
 
         // should be checking if a manga has actually been removed
-        return res.send({ 
-            message: `user manga ${title} has been removed` 
-        }).status(201);
-    } catch {
-        return res.send({
-            message: 'unexpected error removing user manga'
-        }).status(501);
+        // what the fuck does this mean
+        return res.status(201).send({
+            message: `user manga ${title} has been removed`
+        });
+    } catch (err: any) {
+        console.log('error removing user manga', err);
+        return res.status(500).send({
+            message: 'unexpected error removing user manga',
+            details: err
+        });
     }
 });
 

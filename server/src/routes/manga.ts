@@ -6,53 +6,73 @@ const router = express.Router();
 
 /**
  * creates a new manga
- * don't allow duplicates
+ * doesn't allow duplicates
  * returns a JSON message on success or failure
  */
 router.post('/', async (req, res) => {
     try {
         const existingManga = await Manga.findOne({ title: req.body.title });
         if (existingManga) {
-            return res.send({
-                error: `manga ${existingManga.title} already exists in database`
-            }).status(401);
+            return res.status(400).send({
+                message: `manga ${existingManga.title} already exists in database`
+            });
         }
 
         const newManga = await Manga.create(req.body);
-        return res.send({
+        return res.status(201).send({
             message: `new manga ${newManga.title} added`
-        }).status(201);
-        
-    } catch (error: any) {
-        return res.send({
-            error: 'Failed to create manga',
-            details: error.message,
-        }).status(501).json();
+        });
+
+    } catch (err: any) {
+        console.log('manga get error: ', err);
+
+        return res.status(500).send({
+            message: 'Failed to create manga',
+            details: err,
+        }).json();
     }
 });
 
 // reads 100 manga from db
-router.get('/', async (req, res) => {
-    let mangas = await Manga.find({}).limit(100);
-
-    res.send(mangas).status(202);
+router.get('/', async (_req, res) => {
+    try {
+        let mangas = await Manga.find({}).limit(100);
+        return res.status(201).send(mangas);
+    } catch (err: any) {
+        console.log('manga get error: ', err);
+        return res.status(500).send({
+            message: 'Failed to read manga (limit 100)',
+            details: err,
+        }).json();
+    }
 });
 
 // reads a manga by title
 router.get('/:title', async (req, res) => {
-    let foundManga = Manga.find({ _id: req.params.title });
+    try {
+        let foundManga = await Manga.find({ _id: req.params.title });
 
-    if (!foundManga) {
-        return res.send('manga with that title not found').status(405);
-    } else {
-        return res.send(foundManga).status(203);
+        if (foundManga) {
+            return res.send('manga with that title not found').status(405);
+        } else {
+            return res.send(foundManga).status(203);
+        }
+    } catch (err: any) {
+        console.log('manga get by title error: ', err);
+        return res.status(500).send({
+            message: 'Failed to get manga by title',
+            details: err,
+        }).json();
     }
+
 });
 
-// // update
+// update
+// no need for updates so far
 // router.patch();
 
-// // delete
+// delete
+// no need to delete manga so far
 // router.delete();
 
 export default router;

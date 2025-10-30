@@ -14,8 +14,11 @@ app.use(express.json());
 app.use('/manga', manga);
 app.use('/user', user)
 
-app.use((_err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  res.send("An unexpected error occured.").status(500)
+app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
+  console.log('Unhandled error:', err);
+  console.log('Errored request:', req);
+
+  res.status(500).send("An unexpected error occured.")
 })
 
 app.listen(PORT, () => {
