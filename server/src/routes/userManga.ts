@@ -72,7 +72,7 @@ router.post('/', async (req: express.Request<UserMangaParams>, res) => {
             message: `new user manga ${title} added to ${username}`
         });
     } catch (err: any) {
-        console.log('error adding new manga to user: ', err)
+        console.log('error adding new manga to user:', err)
         return res.status(500).send({
             message: 'unexpected error adding user manga',
             details: err
@@ -96,7 +96,7 @@ router.get('/', async (req: express.Request<UserMangaParams>, res) => {
 
         return res.status(201).send(user.mangaList);
     } catch (err: any) {
-        console.log('error getting user manga: ', err);
+        console.log('error getting user manga:', err);
         return res.status(500).send({
             message: 'unexpected error getting user manga',
             details: err
@@ -120,32 +120,60 @@ router.patch('/:title', async (req: express.Request<UserMangaParams>, res) => {
                 message: `manga ${title} does not exist`
             });
         }
-        const mangaID = fetchedManga.id;
+        const mangaID = fetchedManga._id;
+        
+        const currentUser = await User.findOne({ username: username });
+        if (!currentUser) {
+            return res.status(404).send({
+                message: `user ${username} does not exist`
+            });
+        }
 
-        await User.updateOne(
-            {
-                username: username,
-                'mangaList.mangaDetail': mangaID,
-            },
-            {
-                $set: {
-                    'mangaList.$.currentChapter': chapter,
-                    'mangaList.$.dateRead': new Date,
-                },
-                $max: {
-                    'mangaList.$.highestChapter': chapter
-                },
-                mangaList: {
-                    $sort: { dateRead: -1 }
-                },
-            },
+        const { mangaList } = currentUser;
+
+        const mangaIndex = mangaList.findIndex(
+            manga => manga.mangaDetail.id.toString() === mangaID.toString()
         );
+        if (mangaIndex === -1) {
+            return res.status(404).send({
+                message: `manga ${title} not found in user manga list`
+            });
+        }
+
+        const currentManga = mangaList[mangaIndex];
+        let { currentChapter, highestChapter, dateRead } = currentManga;
+        currentChapter = chapter;
+        highestChapter = Math.max(highestChapter, chapter);
+        dateRead = new Date();
+
+        mangaList.unshift(currentManga);
+
+        await currentUser.save();
+
+        // await User.updateOne(
+        //     {
+        //         username: username,
+        //         'mangaList.mangaDetail': mangaID,
+        //     },
+        //     {
+        //         $set: {
+        //             'mangaList.$.currentChapter': chapter,
+        //             'mangaList.$.dateRead': new Date,
+        //         },
+        //         $max: {
+        //             'mangaList.$.highestChapter': chapter
+        //         },
+        //         mangaList: {
+        //             $sort: { dateRead: -1 }
+        //         },
+        //     },
+        // );
 
         return res.status(201).send({
             message: `manga ${title} has been sucessfully been updated`
         });
     } catch (err: any) {
-        console.log('user manga update error: ', err);
+        console.log('user manga update error:', err);
         return res.status(500).send({
             message: 'there was an error updating user manga',
             details: err

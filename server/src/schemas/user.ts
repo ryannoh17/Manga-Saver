@@ -3,17 +3,17 @@ import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mong
 // manga schema specified to users, references separate manga objects
 const userMangaSchema = new Schema({
     mangaDetail: { type: Schema.Types.ObjectId, ref: 'Manga', required: true },
-    currentChapter: Number,
-    highestChapter: Number,
+    currentChapter: { type: Number, required: true},
+    highestChapter: { type: Number, required: true},
     dateAdded: { type: Date, default: Date.now() },
     dateRead: { type: Date, default: Date.now() },
-    notes: String,
+    notes: { type: String, default: '' },
 });
 
 const userSchema = new Schema({
-    username: String,
-    password: String,
-    mangaList: [userMangaSchema]
+    username: { type: String, required: true},
+    password: { type: String, required: true},
+    mangaList: { type: [userMangaSchema], default: [] }
 });
 
 // creating hydrated document types for models

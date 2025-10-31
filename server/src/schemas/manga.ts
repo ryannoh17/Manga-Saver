@@ -1,11 +1,11 @@
 import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mongoose';
 
 const mangaSchema = new Schema({
-    title: String,
-    description: String,
-    genres: [String],
-    url: String, 
-    coverImage: String
+    title: { type: String, required: true },
+    description: { type: String, default: '' },
+    genres: { type: [String], default: [] },
+    url: { type: String, required: true }, 
+    coverImage: { type: String, default: '' }
 });
 
 export type mangaType = InferSchemaType<typeof mangaSchema>;
