@@ -80,9 +80,8 @@ router.post('/', async (req: express.Request<UserMangaParams>, res) => {
     }
 });
 
-/**
- * gets the user's manga
- */
+
+// gets the user's manga
 router.get('/', async (req: express.Request<UserMangaParams>, res) => {
     const { username } = req.params;
 

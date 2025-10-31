@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './db/conn.js';
 import manga from './routes/manga.js';
 import user from './routes/user.js';
+import userManga from './routes/userManga.js';
 
 dotenv.config({ quiet: true });
 const PORT = process.env.PORT || 3000;
@@ -12,7 +13,7 @@ const app = express();
 app.use(cors({ origin: true, credentials: true}));
 app.use(express.json());
 app.use('/manga', manga);
-app.use('/user', user)
+app.use('/user', user);
 
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
   console.log('Unhandled error:', err);

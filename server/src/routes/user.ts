@@ -5,8 +5,7 @@ import { User } from '../schemas/user.js';
 import userManga from './userManga.js'
 
 const router = express.Router();
-router.use(':username/manga', userManga)
-
+router.use('/:username/manga', userManga);
 
 /**
  * creates a new user into the database
@@ -105,9 +104,7 @@ router.get('/:username', async (req, res) => {
 });
 
 
-/**
- * updates a user's username?
- */
+// updates a user's username?
 router.patch('/:username', async (req, res) => {
 	const currentUsername = req.params.username;
 	const newUsername = req.body.username;
@@ -133,9 +130,7 @@ router.patch('/:username', async (req, res) => {
 });
 
 
-/**
- * deletes user account
- */
+// deletes user account
 router.delete('/:username', async (req, res) => {
 	const { username } = req.params;
 
