@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UserMenu } from '../components/UserMenu';
 import { MangaCard } from '../components/MangaCard';
 import '../styles/userPopup.css';
 
 interface MangaEntry {
-  id: string
   title: string
   chapter: number
   lastRead: string
@@ -14,36 +13,73 @@ interface MangaEntry {
 }
 
 type Props = {
-    setSignedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setSignedIn: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function UserPopup({ setSignedIn }: Props) {
-  const [lastManga, setLastManga] = useState<MangaEntry | null>({
-    id: '1',
-    title: 'One Piece',
-    chapter: 1095,
+  const [lastManga, setLastManga] = useState<MangaEntry>({
+    title: 'placeholder',
+    chapter: 0,
     lastRead: new Date().toISOString(),
-    url: 'https://example.com/manga/one-piece/chapter-1095',
+    url: '',
     coverImage:
-      'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=400&h=600&fit=crop',
-    description:
-      'Follow Monkey D. Luffy and his pirate crew in order to find the greatest treasure ever left by the legendary Pirate, Gold Roger.',
+      'https://castlewoodassistedliving.com/wp-content/uploads/2021/01/image-coming-soon-placeholder.png',
+    description: 'coming soon',
   });
-  // const navigate = useNavigate();
+  const [currentUsername, setCurrentUsername] = useState('no username');
 
-  const handleDelete = () => {
-    setLastManga(null)
-    // add functionality to delete last read manga from history
+  const baseURL = 'https://manga-saver-latest.onrender.com'
+
+  useEffect(() => {
+    async function returnLastReadManga() {
+      const { username } = await chrome.storage.local.get(['username']);
+      setCurrentUsername(username);
+
+      try {
+        const userMangaList = await (await fetch(`${baseURL}/user/${username}/manga`)).json();
+        const dbUserManga = userMangaList[0];
+        console.log(dbUserManga);
+        const lastReadManga: MangaEntry = {
+          title: dbUserManga.mangaDetail.title,
+          chapter: dbUserManga.currentChapter,
+          lastRead: dbUserManga.dateRead,
+          url: dbUserManga.mangaDetail.url,
+          coverImage: 'https://castlewoodassistedliving.com/wp-content/uploads/2021/01/image-coming-soon-placeholder.png',
+          description: 'coming soon',
+        }
+        setLastManga(lastReadManga);
+      } catch (error) {
+        console.error('Error: ', error);
+      }
+    }
+
+    returnLastReadManga();
+  }, [])
+
+  const handleDelete = async () => {
+    const { title } = lastManga;
+    const { username } = await chrome.storage.local.get(['username']);
+    console.log(`trying to delete user manga ${title}`);
+    try {
+      await fetch(`${baseURL}/user/${username}/manga/${title}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+    } catch (err) {
+      console.error('Network error deleting manga:', err);
+    }
   }
 
   const handleSignOut = async () => {
     await chrome.storage.local.remove(['username'], () => {
       setSignedIn(false);
     });
-    
+
   }
   const handleViewHistory = () => {
-    window.open('https://example.com/manga-history', '_blank')
+    window.open('', '_blank');
   }
 
   return (
@@ -56,6 +92,7 @@ export default function UserPopup({ setSignedIn }: Props) {
             <UserMenu
               onSignOut={handleSignOut}
               onViewHistory={handleViewHistory}
+              username={currentUsername}
             />
           }
         />

@@ -13,16 +13,19 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
         // checks only if on a manga
         if (slashIndex !== -1) {
             const baseURL = "https://manga-saver-latest.onrender.com"
-            let dotLoc = url.indexOf('.', 30);
-            mangaTitle = url.substring(30, dotLoc).replace(/-/g, ' ');
+            const dotLoc = url.indexOf('.', 30);
+            const mangaTitleDashed = url.substring(30, dotLoc);
+            mangaTitle = mangaTitleDashed.replace(/-/g, ' ');
             mangaChapter = parseInt(url.substring(slashIndex + 2));
+
+            console.log(mangaTitle, mangaChapter);
 
             const { localMangas = [] } = await chrome.storage.local.get('localMangas');
 
             // only if user has read manga before
             if (localMangas.includes(mangaTitle)) {
                 try {
-                    await fetch(`${baseURL}/${username}/manga/${mangaTitle}`, {
+                    await fetch(`${baseURL}/user/${username}/manga/${mangaTitleDashed}`, {
                         method: 'PATCH',
                         headers: {
                             'content-type': 'application/json',
@@ -30,9 +33,9 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                         body: JSON.stringify({
                             chapter: mangaChapter
                         }),
-                    }).then((res) => console.log(res.json()));
-                } catch {
-                    console.log('worker user manga chapter update storage error');
+                    }).then(async (res) => console.log('patching', await res.json()));
+                } catch (err: any) {
+                    console.log('worker user manga chapter update storage error', err);
                 }
             } else {
                 localMangas.push(mangaTitle);
@@ -51,7 +54,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                             url: url,
                             coverImage: '',
                         }),
-                    }).then((res) => res.json());
+                    }).then((res) => console.log(`manga addition result: ${res.json()}`));
                 } catch {
                     console.log('worker new manga storage error');
                 }
@@ -66,7 +69,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                             title: mangaTitle,
                             chapter: mangaChapter,
                         }),
-                    }).then((res) => console.log(res.json()));
+                    }).then(async (res) => console.log(`user manga addition result: ${await res.json()}`));
                 } catch {
                     console.log('worker new user manga storage error');
                 }

@@ -33,15 +33,11 @@ export default function LoginForm({ setSignedIn }: Props) {
 				})
 			});
 
-			const loginResult = await response.json();
-
 			if (response.ok) {
 				await chrome.storage.local.set({ username: username }, () => {
 					setSignedIn(true);
 				});
 			}
-
-			alert(loginResult.message);
 		} catch (error) {
 			console.error(' Login Error:', error);
 		}

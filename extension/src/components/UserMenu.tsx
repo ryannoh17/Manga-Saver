@@ -5,26 +5,27 @@ import '../styles/components/userMenu.css';
 interface UserMenuProps {
   onSignOut: () => void
   onViewHistory: () => void
+  username: string
 }
 
-export function UserMenu({ onSignOut, onViewHistory }: UserMenuProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  //let signedIn = chrome.storage.local.get(['username']) !== null;
+export function UserMenu({ onSignOut, onViewHistory, username }: UserMenuProps) {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
     }
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   return (
     <div className="user-menu" ref={menuRef}>
@@ -37,18 +38,15 @@ export function UserMenu({ onSignOut, onViewHistory }: UserMenuProps) {
 
       {isOpen && (
         <div className='user-menu-dropdown'>
+          <div className='menu-item'>
+            {username}
+          </div>
           <button
             className='menu-item'
             onClick={() => {
               onViewHistory()
               setIsOpen(false)
             }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.backgroundColor = '#f9fafb')
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.backgroundColor = 'transparent')
-            }
           >
             <HistoryIcon className="menu-icon" />
             View Full History
@@ -62,12 +60,6 @@ export function UserMenu({ onSignOut, onViewHistory }: UserMenuProps) {
               onSignOut()
               setIsOpen(false)
             }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.backgroundColor = '#fef2f2')
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.backgroundColor = 'transparent')
-            }
           >
             <LogOutIcon className="menu-icon" />
             Sign Out

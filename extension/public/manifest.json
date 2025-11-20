@@ -19,5 +19,5 @@
         "webNavigation",
         "storage"
      ],
-     "host_permissions": ["http://localhost:3000/*"]
+     "host_permissions": ["https://manga-saver-latest.onrender.com/*"]
 }
