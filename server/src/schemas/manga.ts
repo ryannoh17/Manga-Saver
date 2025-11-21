@@ -3,8 +3,8 @@ import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mong
 const mangaSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, default: '' },
+    url: { type: String, required: true },
     genres: { type: [String], default: [] },
-    url: { type: String, required: true }, 
     coverImage: { type: String, default: '' }
 });
 

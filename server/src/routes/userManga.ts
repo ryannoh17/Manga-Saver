@@ -16,9 +16,7 @@ const router = express.Router({ mergeParams: true });
  */
 router.post('/', async (req: express.Request<UserMangaParams>, res) => {
     const { username } = req.params;
-    const { title, chapter } = req.body;
-
-    console.log(title, chapter, username);
+    const { title, chapter, url } = req.body;
 
     try {
         const fetchedManga = await Manga.findOne({ title: title });
@@ -38,32 +36,15 @@ router.post('/', async (req: express.Request<UserMangaParams>, res) => {
                     mangaList: {
                         mangaDetail: mangaID,
                         currentChapter: chapter,
-                        highestChapter: chapter
+                        highestChapter: chapter,
+                        lastReadURL: url
                     }
                 }
             }
-        ).then(async (addResult) => {
-            if (addResult.modifiedCount === 0) {
-                console.log(addResult);
-                console.log('trying to add new user manga');
-                await User.updateOne(
-                    {
-                        username: username,
-                        'mangaList.mangaDetail': mangaID,
-                    },
-                    {
-                        $set: {
-                            'mangaList.$.currentChapter': chapter,
-                            'mangaList.$.dateRead': new Date,
-                        },
-                        $max: {
-                            'mangaList.$.highestChapter': chapter
-                        }
-                    }
-                );
-
-                return res.status(201).send({
-                    message: 'user manga already exists, updated existing manga',
+        ).then((postResult) => {
+            if (postResult.modifiedCount === 0) {
+                return res.status(410).send({
+                    message: 'user manga already exists',
                 });
             }
         });
@@ -84,6 +65,8 @@ router.post('/', async (req: express.Request<UserMangaParams>, res) => {
 // gets the user's manga
 router.get('/', async (req: express.Request<UserMangaParams>, res) => {
     const { username } = req.params;
+
+    console.log('getting user manga:', username)
 
     try {
         let user = await User
@@ -110,20 +93,28 @@ router.get('/', async (req: express.Request<UserMangaParams>, res) => {
  * UP TO USER TO ENSURE MANGA IS ALREADY IN DATABASE
  */
 router.patch('/:title', async (req: express.Request<UserMangaParams>, res) => {
-    const { username, title } = req.params;
-    const { chapter } = req.body;
+    const { username } = req.params;
+    let { title } = req.params;
+    const { chapter, url } = req.body;
+
+    title = title!.replace(/-/g, ' ');
+    console.log('updating:', username, title, chapter);
 
     try {
+        // manga exists check
         const fetchedManga = await Manga.findOne({ title: title });
         if (!fetchedManga) {
+            console.log(`manga ${title} does not exist`);
             return res.status(404).send({
                 message: `manga ${title} does not exist`
             });
         }
         const mangaID = fetchedManga._id;
-        
+
+        // user exists check
         const currentUser = await User.findOne({ username: username });
         if (!currentUser) {
+            console.log(`user ${username} does not exist`);
             return res.status(404).send({
                 message: `user ${username} does not exist`
             });
@@ -131,43 +122,26 @@ router.patch('/:title', async (req: express.Request<UserMangaParams>, res) => {
 
         const { mangaList } = currentUser;
 
+        // user manga exists check
+        console.log(mangaID.toString());
         const mangaIndex = mangaList.findIndex(
-            manga => manga.mangaDetail.id.toString() === mangaID.toString()
-        );
+            manga => manga.mangaDetail.toString() === mangaID.toString());
         if (mangaIndex === -1) {
+            console.log(`manga ${title} not found in user manga list`);
             return res.status(404).send({
                 message: `manga ${title} not found in user manga list`
             });
         }
 
-        const currentManga = mangaList[mangaIndex];
-        let { currentChapter, highestChapter, dateRead } = currentManga;
-        currentChapter = chapter;
-        highestChapter = Math.max(highestChapter, chapter);
-        dateRead = new Date();
+        // update user manga
+        const [currentManga] = mangaList.splice(mangaIndex, 1);
+        currentManga.currentChapter = chapter;
+        currentManga.highestChapter = Math.max(currentManga.highestChapter, chapter);
+        currentManga.lastReadURL = url;
+        currentManga.dateRead = new Date();
 
-        mangaList.unshift(currentManga);
-
+        mangaList.push(currentManga);
         await currentUser.save();
-
-        // await User.updateOne(
-        //     {
-        //         username: username,
-        //         'mangaList.mangaDetail': mangaID,
-        //     },
-        //     {
-        //         $set: {
-        //             'mangaList.$.currentChapter': chapter,
-        //             'mangaList.$.dateRead': new Date,
-        //         },
-        //         $max: {
-        //             'mangaList.$.highestChapter': chapter
-        //         },
-        //         mangaList: {
-        //             $sort: { dateRead: -1 }
-        //         },
-        //     },
-        // );
 
         return res.status(201).send({
             message: `manga ${title} has been sucessfully been updated`
@@ -187,6 +161,8 @@ router.patch('/:title', async (req: express.Request<UserMangaParams>, res) => {
  */
 router.delete(`/:title`, async (req: express.Request<UserMangaParams>, res) => {
     const { username, title } = req.params;
+
+    console.log('deleting', title, username);
 
     try {
         const fetchedManga = await Manga.findOne({ title: title });
