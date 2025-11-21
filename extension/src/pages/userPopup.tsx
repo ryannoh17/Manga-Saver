@@ -43,7 +43,7 @@ export default function UserPopup({ setSignedIn }: Props) {
           title: dbUserManga.mangaDetail.title,
           chapter: dbUserManga.currentChapter,
           lastRead: dbUserManga.dateRead,
-          url: dbUserManga.mangaDetail.url,
+          url: dbUserManga.lastReadURL,
           coverImage: 'https://castlewoodassistedliving.com/wp-content/uploads/2021/01/image-coming-soon-placeholder.png',
           description: 'coming soon',
         }
