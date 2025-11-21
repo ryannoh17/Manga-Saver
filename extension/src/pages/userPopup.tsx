@@ -37,7 +37,7 @@ export default function UserPopup({ setSignedIn }: Props) {
 
       try {
         const userMangaList = await (await fetch(`${baseURL}/user/${username}/manga`)).json();
-        const dbUserManga = userMangaList[0];
+        const dbUserManga = userMangaList[userMangaList.length - 1];
         console.log(dbUserManga);
         const lastReadManga: MangaEntry = {
           title: dbUserManga.mangaDetail.title,
