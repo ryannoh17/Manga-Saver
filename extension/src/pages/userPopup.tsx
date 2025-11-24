@@ -38,14 +38,14 @@ export default function UserPopup({ setSignedIn }: Props) {
       try {
         const userMangaList = await (await fetch(`${baseURL}/user/${username}/manga`)).json();
         const dbUserManga = userMangaList[userMangaList.length - 1];
-        console.log(dbUserManga);
+        const { title, description, coverImage } = dbUserManga.mangaDetail;
         const lastReadManga: MangaEntry = {
-          title: dbUserManga.mangaDetail.title,
+          title: title,
           chapter: dbUserManga.currentChapter,
           lastRead: dbUserManga.dateRead,
           url: dbUserManga.lastReadURL,
-          coverImage: 'https://castlewoodassistedliving.com/wp-content/uploads/2021/01/image-coming-soon-placeholder.png',
-          description: 'coming soon',
+          coverImage: coverImage,
+          description: description,
         }
         setLastManga(lastReadManga);
       } catch (error) {
