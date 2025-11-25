@@ -14,7 +14,7 @@ export default function LoginForm({ setSignedIn }: Props) {
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-	const baseURL = "https://manga-saver-latest.onrender.com";
+	const baseURL = "https://manga-saver-456109800501.us-east1.run.app";
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

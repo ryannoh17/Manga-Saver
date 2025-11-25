@@ -28,7 +28,7 @@ export default function UserPopup({ setSignedIn }: Props) {
   });
   const [currentUsername, setCurrentUsername] = useState('no username');
 
-  const baseURL = 'https://manga-saver-latest.onrender.com'
+  const baseURL = 'https://manga-saver-456109800501.us-east1.run.app'
 
   useEffect(() => {
     async function returnLastReadManga() {

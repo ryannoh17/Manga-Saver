@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 
-const apiURL = "https://manga-saver-latest.onrender.com";
+const apiURL = "https://manga-saver-456109800501.us-east1.run.app";
 
 async function getHTMLData(url: string) {
 	const res = await fetch(url);
